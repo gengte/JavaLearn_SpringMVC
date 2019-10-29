@@ -12,16 +12,30 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
 ">
+
     <!-- 开启注解扫描-->
     <contex:component-scan base-package="com.g"/>
 
     <!--视图解析器-->
+    <!-- 配置sprigmvc视图解析器：解析逻辑试图；
+        后台返回逻辑试图：success
+        视图解析器解析出真正物理视图：前缀+逻辑视图+后缀 (/WEB-INF/pages/success.jsp)
+    -->
     <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/pages/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <!--开启SpringMVC框架注解的支持-->
-    <mvc:annotation-driven/>
+    <!--配置自定义格式转换器-->
+    <bean id="conversionServiceFactoryBean" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <bean class="com.g.utils.StringToDateConverter"/>
+            </set>
+        </property>
+    </bean>
+
+    <!--开启SpringMVC框架注解的支持 注册自定义类型转换器-->
+    <mvc:annotation-driven conversion-service="conversionServiceFactoryBean"/>
 
 </beans>
